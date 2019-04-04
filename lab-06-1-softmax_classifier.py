@@ -23,24 +23,41 @@ X = tf.placeholder("float", [None, 4])
 Y = tf.placeholder("float", [None, 3])
 nb_classes = 3
 
-W = tf.Variable(tf.random_normal([4, nb_classes]), name='weight')
-b = tf.Variable(tf.random_normal([nb_classes]), name='bias')
 
-# tf.nn.softmax computes softmax activations
-# softmax = exp(logits) / reduce_sum(exp(logits), dim)
-hypothesis = tf.nn.softmax(tf.matmul(X, W) + b)
+with tf.name_scope("hypothesis"):
+    W = tf.Variable(tf.random_normal([4, nb_classes]), name='weight')
+    b = tf.Variable(tf.random_normal([nb_classes]), name='bias')
 
-# Cross entropy cost/loss
-cost = tf.reduce_mean(-tf.reduce_sum(Y * tf.log(hypothesis), axis=1))
+    # tf.nn.softmax computes softmax activations
+    # softmax = exp(logits) / reduce_sum(exp(logits), dim)
+    hypothesis = tf.nn.softmax(tf.matmul(X, W) + b)
 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1).minimize(cost)
+    tf.summary.histogram("bias", b)
+    tf.summary.histogram("weight", W)
+    tf.summary.histogram("Hypothesis", hypothesis)
+
+    
+    # Cross entropy cost/loss
+with tf.name_scope("Cost"):
+    cost = tf.reduce_mean(-tf.reduce_sum(Y * tf.log(hypothesis), axis=1))
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1).minimize(cost)
+    
+    tf.summary.scalar("cost",cost)
+
 
 # Launch graph
 with tf.Session() as sess:
+
+    merged_summary = tf.summary.merge_all()
+    writer = tf.summary.FileWriter('./logs')
+    writer.add_graph(sess.graph)
+
     sess.run(tf.global_variables_initializer())
 
     for step in range(2001):
-            _, cost_val = sess.run([optimizer, cost], feed_dict={X: x_data, Y: y_data})
+            _, summary, cost_val = sess.run([optimizer,merged_summary, cost], feed_dict={X: x_data, Y: y_data})
+
+            writer.add_summary(summary, global_step=step)
 
             if step % 200 == 0:
                 print(step, cost_val)

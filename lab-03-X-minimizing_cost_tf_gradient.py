@@ -21,7 +21,8 @@ cost = tf.reduce_mean(tf.square(hypothesis - Y))
 # Minimize: Gradient Descent Optimizer
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
 
-# Get gradients
+# Get gradients 
+#tf.graidents(y, x) : y를 x에 대해 미분
 gvs = optimizer.compute_gradients(cost)
 
 # Optional: modify gradient if necessary

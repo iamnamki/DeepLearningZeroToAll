@@ -1,6 +1,6 @@
 # Lab 2 Linear Regression
 import tensorflow as tf
-tf.set_random_seed(777)  # for reproducibility
+tf.set_random_seed(777) # tf.set_random_seed를 통해 모든 random value generation function들이 매번 같은 값을 반환함    
 
 # X and Y data
 x_train = [1, 2, 3]

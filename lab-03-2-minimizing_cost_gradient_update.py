@@ -10,7 +10,6 @@ y_data = [1, 2, 3]
 # We know that W should be 1
 # But let's use TensorFlow to figure it out
 W = tf.Variable(tf.random_normal([1]), name="weight")
-
 X = tf.placeholder(tf.float32)
 Y = tf.placeholder(tf.float32)
 
@@ -24,7 +23,7 @@ cost = tf.reduce_mean(tf.square(hypothesis - Y))
 learning_rate = 0.1
 gradient = tf.reduce_mean((W * X - Y) * X)
 descent = W - learning_rate * gradient
-update = W.assign(descent)
+update = W.assign(descent) #계속해서 변수를 갱신
 
 # Launch the graph in a session.
 with tf.Session() as sess:
